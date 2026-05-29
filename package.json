@@ -1,0 +1,24 @@
+{
+  "name": "bugger-bot",
+  "version": "0.1.0",
+  "description": "Bot de Discord para gerenciamento de servidores",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "deploy-commands": "tsx src/deploy-commands.ts",
+    "clear-commands": "tsx src/clear-commands.ts"
+  },
+  "keywords": ["discord", "bot", "moderation"],
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
