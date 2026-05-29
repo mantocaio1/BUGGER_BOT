@@ -18,6 +18,12 @@ export interface BotCommand {
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 
+declare module "discord.js" {
+  interface Client {
+    commands: Collection<string, BotCommand>;
+  }
+}
+
 export class BuggerBot extends Client {
   commands = new Collection<string, BotCommand>();
 

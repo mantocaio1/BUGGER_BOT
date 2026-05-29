@@ -7,6 +7,7 @@ import {
   User,
 } from "discord.js";
 import { getGuildConfig } from "../config/store";
+import { parseHexColor } from "../utils/color";
 
 export type ModAction =
   | "ban"
@@ -50,8 +51,9 @@ export async function sendModLog(options: {
   const channel = options.guild.channels.cache.get(config.modLogChannelId);
   if (!channel?.isTextBased() || channel.isDMBased()) return;
 
+  const customColor = parseHexColor(config.modLogColor);
   const embed = new EmbedBuilder()
-    .setColor(ACTION_COLORS[options.action])
+    .setColor(customColor ?? ACTION_COLORS[options.action])
     .setTitle(ACTION_LABELS[options.action])
     .addFields(
       { name: "Membro", value: `${options.target.tag} (\`${options.target.id}\`)`, inline: true },

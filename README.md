@@ -76,6 +76,27 @@ npm run deploy-commands
 | `/mod timeout` | Silencia por tempo (`10m`, `2h`, `1d`) |
 | `/mod untimeout` | Remove silenciamento |
 
+### Automação personalizável (Fase 3)
+| Comando | Descrição |
+|---------|-----------|
+| `/setup welcome` | Canal + mensagem custom (`{user}` `{server}` `{count}`) |
+| `/setup autorole` | Cargo automático ao entrar |
+| `/setup ticket` | Categoria, cargo suporte, mensagens do painel e do ticket |
+| `/setup reset` | Restaura textos padrão |
+| `/setup ver` | Ver todas as configs |
+| `/ticket painel` | Publica botões de abrir/fechar ticket |
+
+### Preview e guia
+| Comando | Descrição |
+|---------|-----------|
+| `/preview welcome` | Preview do embed de boas-vindas + sugestões |
+| `/preview ticket-painel` | Preview do painel + botão de abrir |
+| `/preview ticket-canal` | Preview dentro do ticket (com motivo exemplo) |
+| `/preview logs` | Preview do embed de moderação |
+| `/preview guia` | Guia completo: placeholders, cores, exemplos |
+
+**Placeholders:** `{user}` `{username}` `{server}` `{count}` `{staff}` `{reason}` `{reason_block}` `{avatar}`
+
 ### Cargos e eventos
 | Comando | Descrição |
 |---------|-----------|
@@ -84,7 +105,7 @@ npm run deploy-commands
 | `/role dar` | Atribui cargo a um membro |
 | `/role remover` | Remove cargo de um membro |
 | `/role listar` | Lista cargos do servidor |
-| `/evento criar` | Cria evento agendado (nome, descrição, início, canal opcional) |
+| `/evento criar` | Cria evento (início, fim, local, canal de voz opcional) |
 | `/evento listar` | Lista eventos com IDs |
 | `/evento cancelar` | Cancela um evento pelo ID |
 
@@ -106,8 +127,7 @@ src/
 
 ## Próximos passos sugeridos
 
-- **Boas-vindas**: mensagem automática + cargo de visitante
-- **Tickets**: canal de suporte com botões
+- **Painel web** ou mais placeholders (ex: `{avatar}`)
 - **Auto-roles**: cargo ao entrar ou por reação
 - **Banco de dados**: SQLite/PostgreSQL para configs por servidor
 - **Painel web**: dashboard para admins (opcional, mais avançado)
