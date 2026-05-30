@@ -2,6 +2,7 @@ import { Events } from "discord.js";
 import { BuggerBot } from "../client";
 import { registerInteractionHandler } from "../handlers/interactions";
 import { registerMemberJoin } from "./memberJoin";
+import { registerMemberLeave } from "./memberLeave";
 
 export function registerEvents(client: BuggerBot) {
   client.once(Events.ClientReady, (readyClient) => {
@@ -9,5 +10,6 @@ export function registerEvents(client: BuggerBot) {
   });
 
   registerMemberJoin(client);
+  registerMemberLeave(client);
   registerInteractionHandler(client);
 }

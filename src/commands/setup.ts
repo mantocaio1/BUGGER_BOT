@@ -8,6 +8,9 @@ import {
 } from "../config/defaults";
 import { getGuildConfig, setGuildConfig } from "../config/store";
 import { parseHexColor } from "../utils/color";
+import { diagnoseAutoRole } from "../services/autoRole";
+import { DEFAULT_GOODBYE_MESSAGE, MAX_ROLE_PANEL_BUTTONS } from "../config/defaults";
+import { DEFAULT_COLOR_PANEL_MESSAGE } from "../config/defaults";
 
 function validateColor(cor?: string | null) {
   if (!cor?.trim()) return undefined;
@@ -111,6 +114,163 @@ export const setupCommand: BotCommand = {
             .setDescription("Ativar ou desativar (padrão: ativar)")
             .setRequired(false)
         )
+        .addBooleanOption((opt) =>
+          opt
+            .setName("testar")
+            .setDescription("Testa o auto-role em você e mostra diagnóstico")
+            .setRequired(false)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("goodbye")
+        .setDescription("Mensagem de saída quando alguém leave.")
+        .addChannelOption((opt) =>
+          opt
+            .setName("canal")
+            .setDescription("Canal de despedidas")
+            .addChannelTypes(ChannelType.GuildText)
+            .setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt
+            .setName("mensagem")
+            .setDescription(`Texto. ${PLACEHOLDER_HINT}`)
+            .setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("titulo").setDescription("Título do embed").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("cor").setDescription("Cor hex (ex: #ED4245)").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("imagem").setDescription("URL do banner").setRequired(false)
+        )
+        .addBooleanOption((opt) =>
+          opt.setName("usar_embed").setDescription("Usar embed (padrão: sim)").setRequired(false)
+        )
+        .addBooleanOption((opt) =>
+          opt.setName("ativo").setDescription("Ativar/desativar (padrão: ativar)").setRequired(false)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("ticket-tipos")
+        .setDescription("Tipos de ticket (Suporte, Denúncia, Parceria) + transcript.")
+        .addBooleanOption((opt) =>
+          opt
+            .setName("ativo")
+            .setDescription("Usar 3 botões de tipo no painel")
+            .setRequired(true)
+        )
+        .addChannelOption((opt) =>
+          opt
+            .setName("transcript")
+            .setDescription("Canal para transcripts (padrão: logs)")
+            .addChannelTypes(ChannelType.GuildText)
+            .setRequired(false)
+        )
+        .addBooleanOption((opt) =>
+          opt
+            .setName("transcript_ativo")
+            .setDescription("Salvar transcript ao fechar (padrão: sim)")
+            .setRequired(false)
+        )
+        .addChannelOption((opt) =>
+          opt
+            .setName("cat_suporte")
+            .setDescription("Categoria só para Suporte")
+            .addChannelTypes(ChannelType.GuildCategory)
+            .setRequired(false)
+        )
+        .addChannelOption((opt) =>
+          opt
+            .setName("cat_denuncia")
+            .setDescription("Categoria só para Denúncia")
+            .addChannelTypes(ChannelType.GuildCategory)
+            .setRequired(false)
+        )
+        .addChannelOption((opt) =>
+          opt
+            .setName("cat_parceria")
+            .setDescription("Categoria só para Parceria")
+            .addChannelTypes(ChannelType.GuildCategory)
+            .setRequired(false)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("cores")
+        .setDescription("Painel de cores do nome (clique para trocar).")
+        .addStringOption((opt) =>
+          opt.setName("titulo").setDescription("Título do embed").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt
+            .setName("mensagem")
+            .setDescription("Texto do painel")
+            .setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("cor_embed").setDescription("Cor do embed (hex)").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo1").setDescription("Cargo de cor 1").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo2").setDescription("Cargo de cor 2").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo3").setDescription("Cargo de cor 3").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo4").setDescription("Cargo de cor 4").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo5").setDescription("Cargo de cor 5").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo6").setDescription("Cargo de cor 6").setRequired(false)
+        )
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName("roles")
+        .setDescription("Painel de cargos por botão (até 5).")
+        .addRoleOption((opt) =>
+          opt.setName("cargo1").setDescription("Cargo 1").setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt.setName("rotulo1").setDescription("Texto do botão 1").setRequired(true)
+        )
+        .addStringOption((opt) =>
+          opt.setName("emoji1").setDescription("Emoji do botão 1").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo2").setDescription("Cargo 2").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("rotulo2").setDescription("Texto do botão 2").setRequired(false)
+        )
+        .addRoleOption((opt) =>
+          opt.setName("cargo3").setDescription("Cargo 3").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("rotulo3").setDescription("Texto do botão 3").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("titulo").setDescription("Título do embed").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("mensagem").setDescription("Descrição do painel").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("cor").setDescription("Cor hex").setRequired(false)
+        )
+        .addStringOption((opt) =>
+          opt.setName("imagem").setDescription("URL do banner").setRequired(false)
+        )
     )
     .addSubcommand((sub) =>
       sub
@@ -207,6 +367,8 @@ export const setupCommand: BotCommand = {
             .addChoices(
               { name: "Boas-vindas (texto)", value: "welcome" },
               { name: "Boas-vindas (estilo)", value: "welcome_style" },
+              { name: "Despedida (texto)", value: "goodbye" },
+              { name: "Despedida (estilo)", value: "goodbye_style" },
               { name: "Ticket painel (texto)", value: "ticket_panel" },
               { name: "Ticket painel (estilo)", value: "ticket_panel_style" },
               { name: "Ticket canal (texto)", value: "ticket_channel" },
@@ -273,6 +435,7 @@ export const setupCommand: BotCommand = {
     if (sub === "autorole") {
       const role = interaction.options.getRole("cargo", true);
       const ativo = interaction.options.getBoolean("ativo") ?? true;
+      const testar = interaction.options.getBoolean("testar") ?? false;
 
       if (role.id === guild.id) {
         throw new Error("Não é possível usar @everyone como auto-role.");
@@ -283,8 +446,164 @@ export const setupCommand: BotCommand = {
         autoRoleEnabled: ativo,
       });
 
+      let extra = "";
+      if (testar) {
+        const member = await guild.members.fetch(interaction.user.id);
+        extra = `\n\n**Diagnóstico:**\n${await diagnoseAutoRole(member)}`;
+      }
+
       await interaction.reply({
-        content: `Auto-role ${ativo ? "ativado" : "desativado"}: ${role}`,
+        content: `Auto-role ${ativo ? "ativado" : "desativado"}: ${role}${extra}`,
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (sub === "goodbye") {
+      const channel = interaction.options.getChannel("canal", true);
+      const message = interaction.options.getString("mensagem");
+      const titulo = interaction.options.getString("titulo");
+      const cor = validateColor(interaction.options.getString("cor"));
+      const imagem = validateImageUrl(interaction.options.getString("imagem"));
+      const usarEmbed = interaction.options.getBoolean("usar_embed");
+      const ativo = interaction.options.getBoolean("ativo") ?? true;
+
+      setGuildConfig(guild.id, {
+        goodbyeChannelId: channel.id,
+        goodbyeMessage: message ?? undefined,
+        goodbyeTitle: titulo ?? undefined,
+        goodbyeEmbedColor: cor,
+        goodbyeImageUrl: imagem,
+        goodbyeUseEmbed: usarEmbed ?? undefined,
+        goodbyeEnabled: ativo,
+      });
+
+      await interaction.reply({
+        content: [
+          `Despedidas ${ativo ? "ativadas" : "desativadas"} em ${channel}.`,
+          message ? "Mensagem personalizada salva." : `Padrão: ${DEFAULT_GOODBYE_MESSAGE}`,
+          `\n_/preview goodbye para visualizar_`,
+        ].join("\n"),
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (sub === "ticket-tipos") {
+      const ativo = interaction.options.getBoolean("ativo", true);
+      const transcript = interaction.options.getChannel("transcript");
+      const transcriptAtivo = interaction.options.getBoolean("transcript_ativo");
+      const catSuporte = interaction.options.getChannel("cat_suporte");
+      const catDenuncia = interaction.options.getChannel("cat_denuncia");
+      const catParceria = interaction.options.getChannel("cat_parceria");
+
+      const categories: Record<string, string> = {
+        ...getGuildConfig(guild.id).ticketTypeCategories,
+      };
+      if (catSuporte) categories.suporte = catSuporte.id;
+      if (catDenuncia) categories.denuncia = catDenuncia.id;
+      if (catParceria) categories.parceria = catParceria.id;
+
+      setGuildConfig(guild.id, {
+        ticketTypesEnabled: ativo,
+        ticketTranscriptChannelId: transcript?.id,
+        ticketTranscriptEnabled: transcriptAtivo ?? undefined,
+        ticketTypeCategories: Object.keys(categories).length ? categories : undefined,
+      });
+
+      await interaction.reply({
+        content: [
+          `Tipos de ticket: ${ativo ? "✅ Suporte · Denúncia · Parceria" : "❌ botão único"}`,
+          transcript ? `Transcript em ${transcript}` : "Transcript: canal de logs",
+          "Republice o painel com `/ticket painel`.",
+        ].join("\n"),
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (sub === "cores") {
+      const titulo = interaction.options.getString("titulo");
+      const mensagem = interaction.options.getString("mensagem");
+      const corEmbed = validateColor(interaction.options.getString("cor_embed"));
+
+      const roleIds: string[] = [];
+      for (let i = 1; i <= 6; i++) {
+        const role = interaction.options.getRole(`cargo${i}` as "cargo1");
+        if (role && role.id !== guild.id) roleIds.push(role.id);
+      }
+
+      const existing = getGuildConfig(guild.id).colorPanel;
+      const mergedRoleIds =
+        roleIds.length > 0 ? roleIds : (existing?.roleIds ?? []);
+
+      if (mergedRoleIds.length === 0) {
+        throw new Error(
+          "Informe pelo menos um cargo (cargo1…) ou use `/cores criar` antes."
+        );
+      }
+
+      setGuildConfig(guild.id, {
+        colorPanel: {
+          title: titulo ?? existing?.title,
+          message: mensagem ?? existing?.message,
+          embedColor: corEmbed ?? existing?.embedColor,
+          roleIds: mergedRoleIds,
+        },
+      });
+
+      await interaction.reply({
+        content: [
+          `Painel de cores configurado (${mergedRoleIds.length} cor(es)).`,
+          mensagem ? "Mensagem personalizada salva." : `Padrão: ${DEFAULT_COLOR_PANEL_MESSAGE}`,
+          "Use `/cores painel` no canal desejado.",
+        ].join("\n"),
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (sub === "roles") {
+      const titulo = interaction.options.getString("titulo");
+      const mensagem = interaction.options.getString("mensagem");
+      const cor = validateColor(interaction.options.getString("cor"));
+      const imagem = validateImageUrl(interaction.options.getString("imagem"));
+
+      const buttons: import("../config/store").RoleButtonEntry[] = [];
+
+      for (let i = 1; i <= MAX_ROLE_PANEL_BUTTONS; i++) {
+        const role = interaction.options.getRole(`cargo${i}` as "cargo1");
+        const label = interaction.options.getString(`rotulo${i}` as "rotulo1");
+        const emoji = interaction.options.getString(`emoji${i}` as "emoji1");
+
+        if (role && label) {
+          buttons.push({
+            roleId: role.id,
+            label,
+            emoji: emoji ?? undefined,
+          });
+        }
+      }
+
+      if (buttons.length === 0) {
+        throw new Error("Informe pelo menos cargo1 e rotulo1.");
+      }
+
+      setGuildConfig(guild.id, {
+        rolePanel: {
+          title: titulo ?? undefined,
+          message: mensagem ?? undefined,
+          color: cor,
+          imageUrl: imagem,
+          buttons,
+        },
+      });
+
+      await interaction.reply({
+        content: [
+          `Painel de cargos configurado (${buttons.length} botão(ões)).`,
+          "Use `/roles painel` no canal desejado.",
+        ].join("\n"),
         ephemeral: true,
       });
       return;
@@ -346,6 +665,13 @@ export const setupCommand: BotCommand = {
           welcomeImageUrl: undefined,
           welcomeUseEmbed: undefined,
         },
+        goodbye: { goodbyeMessage: undefined },
+        goodbye_style: {
+          goodbyeTitle: undefined,
+          goodbyeEmbedColor: undefined,
+          goodbyeImageUrl: undefined,
+          goodbyeUseEmbed: undefined,
+        },
         ticket_panel: { ticketPanelMessage: undefined, ticketPanelTitle: undefined },
         ticket_panel_style: {
           ticketPanelColor: undefined,
@@ -389,7 +715,12 @@ export const setupCommand: BotCommand = {
           `  └ Cor: ${config.welcomeEmbedColor ?? "#57F287"} · Embed: ${config.welcomeUseEmbed !== false ? "sim" : "não"}`,
           `  └ Imagem: ${config.welcomeImageUrl ? "configurada" : "—"}`,
           `• Auto-role: ${onOff(config.autoRoleEnabled)} · ${fmtRole(config.autoRoleId)}`,
-          `• Tickets: ${onOff(config.ticketEnabled)} · Motivo obrigatório: ${config.ticketReasonRequired ? "sim" : "não"}`,
+          `• Despedidas: ${onOff(config.goodbyeEnabled)} · ${fmt(config.goodbyeChannelId)}`,
+          `• Tickets: ${onOff(config.ticketEnabled)} · Tipos: ${config.ticketTypesEnabled ? "3 botões" : "1 botão"}`,
+          `  └ Motivo obrigatório: ${config.ticketReasonRequired ? "sim" : "não"}`,
+          `  └ Transcript: ${config.ticketTranscriptEnabled === false ? "off" : fmt(config.ticketTranscriptChannelId ?? config.modLogChannelId)}`,
+          `• Role panel: ${config.rolePanel?.buttons.length ?? 0} botão(ões)`,
+          `• Cores do nome: ${config.colorPanel?.roleIds.length ?? 0} cor(es)`,
           `  └ Painel: ${config.ticketPanelColor ?? "#5865F2"} · Imagem: ${config.ticketPanelImageUrl ? "sim" : "—"}`,
           `  └ Ticket: ${config.ticketChannelColor ?? "#5865F2"}`,
           `  └ Abertos: ${Object.keys(config.openTickets ?? {}).length}`,

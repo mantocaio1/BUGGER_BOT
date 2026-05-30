@@ -6,10 +6,12 @@ import {
 import { BotCommand, MANAGE_GUILD, requireGuild, requirePermissions } from "../client";
 import { buildSuggestionsEmbeds } from "../services/previewGuide";
 import {
+  buildGoodbyePreviewEmbed,
   buildModLogPreviewEmbed,
   buildTicketChannelPreviewEmbed,
   buildTicketPanelPreviewEmbed,
   buildWelcomePreviewEmbed,
+  goodbyeOverridesToConfig,
   logsOverridesToConfig,
   mergePreviewConfig,
   readPreviewOverrides,
@@ -18,7 +20,7 @@ import {
   ticketPanelOverridesToConfig,
   welcomeOverridesToConfig,
 } from "../services/preview";
-import { buildTicketCloseRow, buildTicketPanelRow } from "../services/tickets";
+import { buildTicketCloseRow, buildTicketPanelRows } from "../services/tickets";
 
 function addEmbedPreviewOptions(sub: SlashCommandSubcommandBuilder, withImage = true) {
   sub
@@ -52,6 +54,11 @@ export const previewCommand: BotCommand = {
     .setName("preview")
     .setDescription("Visualiza embeds e mostra sugestões antes de configurar.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .addSubcommand((sub) =>
+      addEmbedPreviewOptions(
+        sub.setName("goodbye").setDescription("Preview das despedidas.")
+      )
+    )
     .addSubcommand((sub) =>
       addEmbedPreviewOptions(
         sub.setName("welcome").setDescription("Preview das boas-vindas.")
@@ -95,6 +102,7 @@ export const previewCommand: BotCommand = {
             .addChoices(
               { name: "Tudo", value: "todos" },
               { name: "Boas-vindas", value: "welcome" },
+              { name: "Despedidas", value: "goodbye" },
               { name: "Painel de tickets", value: "ticket_painel" },
               { name: "Canal do ticket", value: "ticket_canal" },
               { name: "Logs", value: "logs" }
@@ -130,7 +138,7 @@ export const previewCommand: BotCommand = {
       motivo: interaction.options.getString("motivo"),
     });
 
-    let previewModule: "welcome" | "ticket_painel" | "ticket_canal" | "logs";
+    let previewModule: "welcome" | "goodbye" | "ticket_painel" | "ticket_canal" | "logs";
     let previewEmbed;
     let components;
 
@@ -141,6 +149,13 @@ export const previewCommand: BotCommand = {
         welcomeOverridesToConfig(overrides)
       );
       previewEmbed = buildWelcomePreviewEmbed(guild, interaction.user, config);
+    } else if (sub === "goodbye") {
+      previewModule = "welcome";
+      const config = mergePreviewConfig(
+        guild.id,
+        goodbyeOverridesToConfig(overrides)
+      );
+      previewEmbed = buildGoodbyePreviewEmbed(guild, interaction.user, config);
     } else if (sub === "ticket-painel") {
       previewModule = "ticket_painel";
       const config = mergePreviewConfig(
@@ -149,7 +164,7 @@ export const previewCommand: BotCommand = {
       );
       const staff = resolveStaffMention(guild, config);
       previewEmbed = buildTicketPanelPreviewEmbed(guild, config, staff);
-      components = [buildTicketPanelRow()];
+      components = buildTicketPanelRows(config);
     } else if (sub === "ticket-canal") {
       previewModule = "ticket_canal";
       const config = mergePreviewConfig(

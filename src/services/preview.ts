@@ -1,5 +1,8 @@
 import { EmbedBuilder, Guild, User } from "discord.js";
 import {
+  DEFAULT_GOODBYE_COLOR,
+  DEFAULT_GOODBYE_MESSAGE,
+  DEFAULT_GOODBYE_TITLE,
   DEFAULT_TICKET_CHANNEL_COLOR,
   DEFAULT_TICKET_CHANNEL_MESSAGE,
   DEFAULT_TICKET_CHANNEL_TITLE,
@@ -63,6 +66,7 @@ function buildTicketVars(
     staff: staffMention,
     reason: sampleReason,
     reason_block: reasonBlock,
+    type: "Suporte",
     avatar: user.displayAvatarURL({ size: 256 }),
   };
 }
@@ -94,6 +98,36 @@ export function buildWelcomePreviewEmbed(
   }
 
   embed.setFooter({ text: "Preview — BUGGER_BOT" });
+  return embed;
+}
+
+export function buildGoodbyePreviewEmbed(
+  guild: Guild,
+  user: User,
+  config: GuildConfig
+) {
+  const variables = buildWelcomeVars(guild, user);
+  const message = applyPreviewStrings(
+    config.goodbyeMessage?.trim() || DEFAULT_GOODBYE_MESSAGE,
+    variables
+  );
+  const title = config.goodbyeTitle?.trim()
+    ? applyPreviewStrings(config.goodbyeTitle, variables)
+    : DEFAULT_GOODBYE_TITLE;
+
+  const color = parseHexColor(config.goodbyeEmbedColor) ?? DEFAULT_GOODBYE_COLOR;
+
+  const embed = new EmbedBuilder()
+    .setColor(color)
+    .setTitle(title)
+    .setDescription(message)
+    .setThumbnail(user.displayAvatarURL({ size: 256 }));
+
+  if (config.goodbyeImageUrl?.trim()) {
+    embed.setImage(config.goodbyeImageUrl.trim());
+  }
+
+  embed.setFooter({ text: "Preview — despedida" });
   return embed;
 }
 
@@ -174,6 +208,15 @@ export function welcomeOverridesToConfig(overrides: PreviewOverrides): Partial<G
   if (overrides.titulo != null) patch.welcomeTitle = overrides.titulo || undefined;
   if (overrides.cor != null) patch.welcomeEmbedColor = overrides.cor || undefined;
   if (overrides.imagem != null) patch.welcomeImageUrl = overrides.imagem || undefined;
+  return patch;
+}
+
+export function goodbyeOverridesToConfig(overrides: PreviewOverrides): Partial<GuildConfig> {
+  const patch: Partial<GuildConfig> = {};
+  if (overrides.mensagem != null) patch.goodbyeMessage = overrides.mensagem || undefined;
+  if (overrides.titulo != null) patch.goodbyeTitle = overrides.titulo || undefined;
+  if (overrides.cor != null) patch.goodbyeEmbedColor = overrides.cor || undefined;
+  if (overrides.imagem != null) patch.goodbyeImageUrl = overrides.imagem || undefined;
   return patch;
 }
 

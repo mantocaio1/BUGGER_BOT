@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { BuggerBot } from "../client";
+import { applyAutoRole } from "../services/autoRole";
 import {
   DEFAULT_WELCOME_COLOR,
   DEFAULT_WELCOME_TITLE,
@@ -9,15 +9,9 @@ import { applyEmbedTitle, buildConfiguredEmbed } from "../utils/embeds";
 import { applyTemplate } from "../utils/template";
 
 export async function handleMemberJoin(member: GuildMember) {
+  await applyAutoRole(member);
+
   const config = getGuildConfig(member.guild.id);
-
-  if (config.autoRoleEnabled && config.autoRoleId) {
-    const role = member.guild.roles.cache.get(config.autoRoleId);
-    if (role && role.editable) {
-      await member.roles.add(role).catch(() => undefined);
-    }
-  }
-
   if (!config.welcomeEnabled || !config.welcomeChannelId) return;
 
   const channel = member.guild.channels.cache.get(config.welcomeChannelId);
@@ -53,7 +47,7 @@ export async function handleMemberJoin(member: GuildMember) {
   await (channel as TextChannel).send(message).catch(() => undefined);
 }
 
-export function registerMemberJoin(client: BuggerBot) {
+export function registerMemberJoin(client: import("../client").BuggerBot) {
   client.on("guildMemberAdd", (member) => {
     handleMemberJoin(member).catch(console.error);
   });

@@ -5,12 +5,17 @@ import { applyTemplate } from "./template";
 
 export interface EmbedTemplateOptions {
   config: GuildConfig;
-  colorKey: "welcomeEmbedColor" | "ticketPanelColor" | "ticketChannelColor" | "modLogColor";
+  colorKey:
+    | "welcomeEmbedColor"
+    | "goodbyeEmbedColor"
+    | "ticketPanelColor"
+    | "ticketChannelColor"
+    | "modLogColor";
   title?: string;
-  titleKey?: "welcomeTitle" | "ticketPanelTitle" | "ticketChannelTitle";
+  titleKey?: "welcomeTitle" | "goodbyeTitle" | "ticketPanelTitle" | "ticketChannelTitle";
   description: string;
   imageUrl?: string;
-  imageKey?: "welcomeImageUrl" | "ticketPanelImageUrl";
+  imageKey?: "welcomeImageUrl" | "goodbyeImageUrl" | "ticketPanelImageUrl";
   thumbnailUrl?: string;
   footer?: string;
   defaultColor: number;

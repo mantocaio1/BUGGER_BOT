@@ -5,8 +5,9 @@ import { pingCommand } from "./ping";
 import { serverinfoCommand } from "./serverinfo";
 import { moderationCommand } from "./moderation";
 import { setupCommand } from "./setup";
-import { ticketCommand } from "./ticket";
 import { previewCommand } from "./preview";
+import { rolesCommand } from "./roles";
+import { coresCommand } from "./cores";
 
 export const commands = [
   pingCommand,
@@ -16,7 +17,8 @@ export const commands = [
   roleCommand,
   eventCommand,
   moderationCommand,
-  ticketCommand,
+  coresCommand,
+  rolesCommand,
 ];
 
 export function loadCommands(client: BuggerBot) {
