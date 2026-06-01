@@ -1,0 +1,22 @@
+{
+  "1509666562603487262": {
+    "modLogChannelId": "1509721790526652580",
+    "autoRoleId": "1510020292699881662",
+    "autoRoleEnabled": true,
+    "welcomeChannelId": "1510003870372462654",
+    "welcomeMessage": "Bem vindo a Jungle Juice {user}! Você é o inseto #{count}",
+    "welcomeEnabled": true,
+    "welcomeTitle": "🦗  Parece que temos mais um inseto na área! 🪲!",
+    "welcomeEmbedColor": "#01FEC3",
+    "welcomeImageUrl": "https://media.discordapp.net/attachments/1509993399032221837/1509998266555695305/giphy_2.gif?ex=6a1b36f9&is=6a19e579&hm=9b82fdb18682d01d508d03286daa85dfda7e20170db039829a68a09e73393e4e&=",
+    "welcomeUseEmbed": true,
+    "goodbyeChannelId": "1510083783519502527",
+    "goodbyeMessage": "O {user} teve seu joelho lesionado na batalha por um ferrão e agora não lutará mais ao nosso lado!",
+    "goodbyeTitle": "O {username} foi embora",
+    "goodbyeEmbedColor": "#F56D18",
+    "goodbyeImageUrl": "https://cdn.discordapp.com/attachments/1509993399032221837/1510086358981541938/giphy_3.gif?ex=6a1b8904&is=6a1a3784&hm=03e25c775809dfee9385fbf7892db5e15a4dc6e323556e63aea2f0d0b8ce477b&",
+    "goodbyeUseEmbed": true,
+    "goodbyeEnabled": true,
+    "modLogColor": "#ED4245"
+  }
+}
