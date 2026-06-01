@@ -13,12 +13,14 @@ const client = new client_1.BuggerBot();
 (0, register_1.registerEvents)(client);
 client.login(token);
 
-import express from "express";
-
+const express = require('express');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Online");
+app.get('/', (req, res) => {
+  res.send('Bot está online! 🤖');
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(PORT, () => {
+  console.log(`Web server rodando na porta ${PORT}`);
+});
