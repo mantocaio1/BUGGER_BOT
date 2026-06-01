@@ -13,24 +13,12 @@ const client = new client_1.BuggerBot();
 (0, register_1.registerEvents)(client);
 client.login(token);
 
-const express = require("express");
-const { Client, GatewayIntentBits } = require("discord.js");
+import express from "express";
 
 const app = express();
 
 app.get("/", (req, res) => {
-    res.send("Bot online!");
+  res.send("Online");
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log(`Web Server iniciado na porta ${PORT}`);
-});
-
-// Seu código do bot aqui
-const client = new Client({
-    intents: [GatewayIntentBits.Guilds]
-});
-
-client.login(process.env.DISCORD_TOKEN);
+app.listen(process.env.PORT || 3000);
